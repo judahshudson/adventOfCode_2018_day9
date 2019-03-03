@@ -1,0 +1,174 @@
+'''
+
+'''
+
+
+'''
+ALGORITHM
+
+Place Marbles
+- 0 -> first marble at center
+
+-placement: 
+newIndex = between [currentIndex+1] and [currentIndex+2] ***use insertion***
+
+-counting: 
+wraps around (to zero and starts again)
+
+-if multiple of 23: #special case
+*currentPlayerScore += currentMarble 
+(currentMarble not placed)
+*currentPlayerScore += the marble 7 marbles counter-clockwise from the current marble
+{ [indexof(currentMarble)-7] }
+*the marble 7 marbles counter-clockwise from the current marble is removed from the circle
+{ removeMarble[indexof(currentMarble) - 7] }
+*The marble immediately clockwise of the marble that was removed becomes the new current marble.
+{ newCurrentMarble[indexof(removedMarbleAbove)-1] }
+
+What Is The Winning Elf's Score?
+-game ends after last marble is placed
+-sort scores of all players
+-return last/highest score
+
+'''
+
+
+'''
+PSEUDO CODE
+***CONTINUE HERE***
+FIRST
+-continue writing code
+-create working program, NOT including 23 exception
+-use printouts
+*track progress
+-run for input up to 22
+*use sample code on website
+*output should be same as printout diagram
+
+-use functions
+
+
+SECOND
+-add 23 exception
+
+-5 test cases listed on website
+*function runTests
+*use input, should match output
+*unit testing,
+*assertion, raise exception if fails, if true does nothing (use for debugging, not in production code)
+*run first
+*then ren rest of code
+
+#handy starting functions templates:
+(eg imports, read in file, functions)
+def rangeInclusive(start, stop, step=1):
+	return range(start, stop+step, step)
+
+#google research "python generators"
+def rangeInclusiveChars(start, stop):
+	for i in rangeInclusive(ord(start), ord(stop)):
+		yield char(i)
+
+23 EXCEPTION
+if multiple of 23:
+  -marble not placed in circle
+  -value of marble added to current player's score
+  -the marble 7 marbles counter-clockwise from the current marble
+    is removed from the circle
+    and also added to the current player's score.
+
+                
+
+PART TWO / STAR 2
+-if stuck:
+	teachable moment with Jason
+'''
+
+def rangeInclusive(start, stop, step=1):
+	return range(start, stop+step, step)
+
+numPlayers = 9
+lastMarblePoints = 25
+currentMarbleIndex = 0
+currentMarbleValue = 0
+circle = [0]	#initial marble placed (index 0 with value 0)
+score = {}      #player:score
+
+#initialize player scores (so all represented, and prevent error using += to creat scores in 23 exception(cant += if not initialized))
+for p in rangeInclusive(1, numPlayers):
+        score[p] = 0
+
+while currentMarbleValue < lastMarblePoints:	#play game until last marble placed ***watch for 23 exception
+
+        #keep track of players & turns
+        for i in range(1, numPlayers+1):    #current player == i  
+                #next marble number
+                currentMarbleValue += 1	
+                
+                #23 exception
+                if currentMarbleValue % 23 == 0:        #multiple of 23
+                        score[i] += currentMarbleValue  #value of marble added to current player's score
+                        score[i] += circle[currentMarbleIndex-7]        #7th marble counter-clockwise from current marble -> added to current player's score...
+                        del circle[currentMarbleIndex-7]               #...and is removed from circle
+                        break                           #do not place marble into circle (skips code below)
+
+                #place next marble nto circle
+                if currentMarbleIndex == len(circle)-1:                 #current = last index in list
+                        currentMarbleIndex = 1
+                elif (len(circle)-1) - currentMarbleIndex == 1:         #current = 2nd to last
+                        currentMarbleIndex = len(circle)
+                else:                                                   #normal placement
+                        currentMarbleIndex += 2	
+                circle.insert(currentMarbleIndex, currentMarbleValue)
+                print(circle)
+
+                #23 wrap-around
+
+                
+                
+
+
+'''
+#***CONTINUE HERE***
+
+	-end of game evaluation
+	
+	-run sample code tests
+'''
+	
+
+
+
+'''
+OLD CODE NO USED
+
+
+WHY WRONG: didn't update currentIndexValue after insertion
+while currentMarbleValue < lastMarblePoints:	#play game until last marble placed ***watch for 23 exception
+#place next marble
+	if currentMarbleIndex + 2 > len(circle)-1:	#wrap around
+		currentMarbleIndex = (currentMarbleIndex + 2) - (len(circle)-1)	#num spaces move past 0	
+	currentMarbleIndex += 2	#next marble value
+	currentMarbleValue += 1	#next marble index
+	circle.insert(currentMarbleIndex, currentMarbleValue)	#insert next marble into circle	
+'''
+
+'''
+while currentMarbleValue < lastMarblePoints:	#play game until last marble placed ***watch for 23 exception
+#place next marble nto circle
+	currentMarbleValue += 1	#next marble number
+	if currentMarbleIndex == len(circle)-1:               #current = last index in list
+		circle.insert(1, currentMarbleValue)
+		print(circle)
+	elif (len(circle)-1) - currentMarbleIndex == 1:     #current = 2nd to last 
+		circle.append(currentMarbleValue)
+		print(circle)
+	else:
+		circle.insert(currentMarbleIndex + 2, currentMarbleValue)	#normal placement
+		print(circle)
+print(circle)
+'''
+
+
+
+
