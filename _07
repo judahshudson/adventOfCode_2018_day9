@@ -1,0 +1,150 @@
+'''
+
+PART TWO / STAR 2
+-if stuck:
+        teachable moment with Jason
+'''
+
+
+def rangeInclusive(start, stop, step=1):
+        return range(start, stop+step, step)
+
+numPlayers = 10
+lastMarblePoints = 1618
+currentMarbleIndex = 0
+currentMarbleValue = 0
+circle = [0]    #initial marble placed (index 0 with value 0)
+score = {}      #player:score
+
+
+#initialize player scores (so all represented, and prevent error using += to creat scores in 23 exception(cant += if not initialized))
+for p in rangeInclusive(1, numPlayers):
+        score[p] = 0
+
+#play game until last marble placed ***watch for 23 exception
+while currentMarbleValue < lastMarblePoints:    
+
+        #keep track of players & turns
+        for player in range(1, numPlayers+1):    #current player == i  
+                #next marble number
+                currentMarbleValue += 1
+#***NEW CODE HERE***
+                if currentMarbleValue <= lastMarblePoints:      
+                        #23 exception
+                        if currentMarbleValue % 23 == 0:        #multiple of 23
+                                score[player] += currentMarbleValue  #value of marble added to current player's score
+                                #7th marble counter-clockwise from current marble
+                                if currentMarbleIndex < 7:            #wrap around case
+                                        excptnIndex = (len(circle)) - (7-currentIndex)
+                                else:
+                                        excptnIndex = currentMarbleIndex-7       #regular case
+                                        '''
+                                print("\nexcptnIndex: ",  excptnIndex)
+                                print("length of circle: ", len(circle))
+                                print("currentMarbleValue: ", currentMarbleValue)
+                                print("currentMarbleIndex: ", currentMarbleIndex)
+                                '''     
+                                score[player] += circle[excptnIndex]    # -> added to current player's score...
+                                del circle[excptnIndex]                 #...and is removed from circle
+                                currentMarbleIndex = excptnIndex - 1    #current marble = marble located immediately clockwise of the marble that was removed
+                                #break                                   #do not place %23 marble into circle (skips code below)
+        #***NEW CODE***
+                        else:
+                                #place next marble into circle
+                                if currentMarbleIndex == len(circle)-1:                 #current = last index in list
+                                        currentMarbleIndex = 1
+                                elif (len(circle)-1) - currentMarbleIndex == 1:         #current = 2nd to last
+                                        currentMarbleIndex = len(circle)
+                                else:                                                   #normal placement
+                                        currentMarbleIndex += 2 
+                                circle.insert(currentMarbleIndex, currentMarbleValue)
+                                #print("[{}]  {}".format(player, circle))         #prints display like AOC example page
+
+
+                
+#end of game evaluation
+
+#find highest score
+winner = -1
+highScore = 0
+for p in rangeInclusive(1, numPlayers):
+        if score[p] > highScore:
+                highScore = score[p]
+                winner = p
+        
+print("Player ", winner, " is the winner with a score of: ", highScore)
+
+
+#***CONTINUE HERE***
+#answers still not matching up (8887 instead of 8317)
+
+
+'''
+PREVIOUS PROBLEM:
+#why is score too high?
+
+
+NEW CLUES
+-after 23 exception,
+next player returned to 1,
+instead of continuing (eg should have been player 5) 
+*due to break statement at end of 23 exception block
+*fixed via restructing into if/else statement
+
+-game keeps going after 25 marble value limit
+keeps going through full number of players
+*due to while condition statement being outside of numPlayers iterator
+*solution:
+nest inside if statement
+if currentMarbleValue <= lastMarblePoints:
+
+didn't work:
+place a copy of while condition inside of player iterator as well,
+while keeping original
+
+
+
+POSSIBLE CAUSES
+-calculation of score
+-storing score
+-finding highest score
+-what is added to score
+-bounds, end of file parsing
+-adding extra things to score
+-unknown issues
+-parsing number of players
+-parsing highest marble value
+
+-issue with loops/code structure?
+eg counting score too many times
+
+
+POSSIBLE SOLUTION PATHS 
+-build larger sample set
+*up to 64
+*track output, see what's going on
+-create functions
+*way to see code one more time
+-check blog
+-just go through entire code again
+-
+
+
+WRONG OUtPUTS
+        
+10 players, 1618pts
+73,841 instead of 8,317
+
+13 players, 7999pts
+181,409 instead of 146,373
+
+17 players, 1104pts
+35,090 instead of 2,764
+
+21 players, 6111pts
+1,051,803, instead of 54,718
+
+30 players, 5807pts
+96,0826 instead of 37,305
+
+'''
